@@ -21,6 +21,7 @@
       display: flex;
       align-items: center;
       margin-bottom: 40px;
+      text-align: center; /* Center header content */
     }
 
     header img {
@@ -42,6 +43,7 @@
       font-weight: 500;
       color: #1e3a8a;
       margin-bottom: 30px;
+      text-align: center; /* Center the heading */
     }
 
     .btn {
@@ -79,12 +81,54 @@
       font-size: 13px;
       color: #475569;
       margin-top: 6px;
+      text-align: center; /* Center the note */
+    }
+
+    /* Mobile responsiveness */
+    @media (max-width: 600px) {
+      body {
+        padding: 20px 10px; /* Reduce padding on smaller screens */
+      }
+
+      header {
+        flex-direction: column; /* Stack header items vertically */
+        margin-bottom: 30px;
+      }
+
+      header img {
+        margin-right: 0; /* Remove right margin when stacked */
+        margin-bottom: 10px; /* Add space below logo */
+      }
+
+      header h1 {
+        font-size: 1.5rem; /* Decrease header font size */
+      }
+
+      h2 {
+        font-size: 1.3rem; /* Decrease heading font size */
+        margin-bottom: 20px;
+      }
+
+      .btn {
+        padding: 12px 20px; /* Adjust button padding */
+        font-size: 15px; /* Adjust button font size */
+        width: 95%; /* Make buttons slightly wider on smaller screens */
+        max-width: 280px; /* Adjust max-width for buttons */
+      }
+
+      .skip {
+        font-size: 14px; /* Adjust skip font size */
+        margin-top: 20px;
+      }
+
+      .note {
+        font-size: 12px; /* Adjust note font size */
+      }
     }
   </style>
 </head>
 <body>
 
-  <!-- Header / Branding -->
   <header>
     <img src="https://i.ibb.co/LhxDvVJk/grindzone.png" alt="GrindZone Logo" />
     <h1>GrindZone</h1>
@@ -92,11 +136,9 @@
 
   <h2>What would you like to do?</h2>
 
-  <!-- Options -->
   <button class="btn" onclick="location.href='c.html'">Create a Team</button>
   <button class="btn" onclick="location.href='j.html'">Join a Team</button>
 
-  <!-- Skip Option -->
   <div class="skip" onclick="location.href='main.html'">Skip for Now →</div>
   <div class="note">You can do it later from the main menu.</div>
 
