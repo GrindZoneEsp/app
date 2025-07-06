@@ -75,6 +75,21 @@
       background-color: #4c6ef5;
     }
 
+    .forgot-password {
+      margin-top: 10px;
+      text-align: right;
+      font-size: 13px;
+    }
+
+    .forgot-password a {
+      color: #5c7cfa;
+      text-decoration: none;
+    }
+
+    .forgot-password a:hover {
+      text-decoration: underline;
+    }
+
     .footer {
       margin-top: 20px;
       font-size: 13px;
@@ -95,13 +110,17 @@
 
   <div class="container">
     <div class="logo">
-     
       <img src="https://i.ibb.co/LhxDvVJk/grindzone.png" alt="GRINDZONE Logo" />
       <div><span>GRINDZONE</span></div>
     </div>
 
     <input type="email" id="loginEmail" placeholder="Email" />
     <input type="password" id="loginPassword" placeholder="Password" />
+
+    <div class="forgot-password">
+      <a href="forgot.html">Forgot Password?</a>
+    </div>
+
     <button onclick="loginUser()">Login</button>
 
     <div class="footer">
@@ -109,7 +128,6 @@
     </div>
   </div>
 
-  <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
 
