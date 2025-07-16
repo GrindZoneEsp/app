@@ -356,6 +356,11 @@
         .instruction-text strong {
             color: #2C2F33;
         }
+        /* Style for the "Free" text */
+        .free-entry {
+            color: #2ECC71; /* Green color for "Free" */
+            font-weight: bold;
+        }
 
         /* Styles for the new View Details Modal */
         #viewDetailsModal .credentials-display {
@@ -536,8 +541,8 @@
             <label for="joinTeamIdInput">Team Code:</label>
             <input type="text" id="joinTeamIdInput" placeholder="Enter your team code" required>
             <label for="joinTeamNameInput">Team Name:</label>
-            <input type="text" id="joinTeamNameInput" placeholder="Enter your team name" required>
-            <button id="confirmJoinBtn">Next: Make Payment</button>
+            <input type="text" id="joinTeamNameInput" placeholder="Auto-fetched or enter manually" required>
+            <button id="confirmJoinBtn">Next</button>
         </div>
     </div>
 
@@ -651,8 +656,9 @@
         const db = firebase.firestore();
         const auth = firebase.auth();
         const tournamentsCollection = db.collection('tournaments');
-        const usersCollection = db.collection('users');
+        // Assuming 'teams' collection exists where teamCode is the document ID and it has a 'teamName' field
         const teamsCollection = db.collection('teams'); 
+        const usersCollection = db.collection('users');
 
         let allTournaments = [];
         let currentUserId = null;
@@ -724,6 +730,10 @@
                 enteredTeamCode = null; 
                 enteredTeamName = null; 
                 selectedTournamentForPayment = null; // Clear selected tournament on close
+                // Reset join modal inputs
+                joinTeamIdInput.value = '';
+                joinTeamNameInput.value = '';
+                joinTeamNameInput.readOnly = false; // Make it editable again
             };
         });
         window.onclick = (event) => {
@@ -731,6 +741,9 @@
                 joinModal.style.display = 'none';
                 enteredTeamCode = null;
                 enteredTeamName = null;
+                joinTeamIdInput.value = '';
+                joinTeamNameInput.value = '';
+                joinTeamNameInput.readOnly = false;
             }
             if (event.target == payModal) {
                 payModal.style.display = 'none';
@@ -826,35 +839,35 @@
                                             tournament.pending_payment_confirmations.filter(p => p.confirm === true).length : 0;
                 const isFull = confirmedTeamCount >= tournament.maxTeams;
                 const isActive = tournament.status === 'active';
+                const isFreeTournament = tournament.entryFee === 0;
 
                 let statusMessage = '';
                 let actionButton = '';
                 
                 if (currentUserId) {
-                    const userTeamConfirmedInPending = tournament.pending_payment_confirmations && tournament.pending_payment_confirmations.find(p =>
-                        p.requested_by_user_id === currentUserId && p.confirm === true
-                    );
-                    const userTeamPendingPayment = tournament.pending_payment_confirmations && tournament.pending_payment_confirmations.find(p =>
-                        p.requested_by_user_id === currentUserId && p.confirm !== true 
+                    // Check if the current user's team (by team_id) is already confirmed or pending for THIS tournament
+                    const userTeamStatus = tournament.pending_payment_confirmations && tournament.pending_payment_confirmations.find(p =>
+                        p.requested_by_user_id === currentUserId // Check if *this user* has a record
                     );
 
-                    if (userTeamConfirmedInPending) {
-                        statusMessage = `Your Team (${userTeamConfirmedInPending.team_name}): <span class="status-paid">REGISTERED</span>`;
+                    if (userTeamStatus && userTeamStatus.confirm === true) {
+                        statusMessage = `Your Team (${userTeamStatus.team_name}): <span class="status-paid">REGISTERED</span>`;
                         
                         // Push the entire tournament object to be processed by renderUserConfirmedTeams
                         userJoinedTournamentsData.push({
                             ...tournament, // Spread all tournament properties
-                            _userTeamName: userTeamConfirmedInPending.team_name // Add user's team name for easy access
+                            _userTeamName: userTeamStatus.team_name // Add user's team name for easy access
                         });
 
                         // For the main tournament list, show a "View Details" button
                         actionButton = `<button class="view-btn" 
                                         data-tournament-id="${tournament.id}" 
-                                        data-user-team-name="${userTeamConfirmedInPending.team_name}">View Details</button>`;
-                    } else if (userTeamPendingPayment) {
-                        statusMessage = `Your Team (${userTeamPendingPayment.team_name}): <span class="status-pending-payment">PENDING ADMIN CONFIRMATION</span>`;
+                                        data-user-team-name="${userTeamStatus.team_name}">View Details</button>`;
+                    } else if (userTeamStatus && userTeamStatus.confirm !== true) {
+                        statusMessage = `Your Team (${userTeamStatus.team_name}): <span class="status-pending-payment">PENDING ADMIN CONFIRMATION</span>`;
                         actionButton = `<button class="status-button">Request Sent</button>`;
-                    } else if (!isFull && isActive) {
+                    }
+                    else if (!isFull && isActive) {
                         actionButton = `<button class="join-btn" data-id="${tournament.id}">Join Tournament</button>`; 
                     } else if (isFull) {
                         statusMessage = `<span class="status-completed">TOURNAMENT FULL</span>`;
@@ -866,12 +879,14 @@
                     actionButton = `<button class="status-button" disabled>Login to Join</button>`;
                 }
 
+                const entryFeeDisplay = isFreeTournament ? `<span class="free-entry">Free</span>` : `₹${tournament.entryFee}`;
+
 
                 card.innerHTML = `
                     <h3>${tournament.name}</h3>
                     <p><strong>Game:</strong> ${tournament.game}</p>
                     <p><strong>Date:</strong> ${new Date(tournament.date).toLocaleString()}</p>
-                    <p><strong>Entry Fee:</strong> ₹${tournament.entryFee}</p>
+                    <p><strong>Entry Fee:</strong> ${entryFeeDisplay}</p>
                     <p><strong>Teams:</strong> ${confirmedTeamCount} / ${tournament.maxTeams}</p>
                     <p><strong>Matches:</strong> ${tournament.numMatches || 'N/A'}</p>
                     <p><strong>Prize Pool:</strong> ₹${tournament.prizePool || '0'}</p>
@@ -1024,33 +1039,98 @@
             currentTournamentIdForPayment = tournamentId; 
             joinTeamIdInput.value = ""; 
             joinTeamNameInput.value = ""; 
+            joinTeamNameInput.readOnly = false; // Ensure it's editable initially
             confirmJoinBtn.disabled = false; 
+
+            // If entry fee is 0, change button text and skip to confirmation directly
+            if (selectedTournamentForPayment.entryFee === 0) {
+                confirmJoinBtn.textContent = "Confirm Registration (Free)";
+            } else {
+                confirmJoinBtn.textContent = "Next: Make Payment";
+            }
+            
             joinModal.style.display = "flex";
         }
 
-        // --- Step 2: Transition from Join to Pay Modal ---
-        confirmJoinBtn.addEventListener("click", () => {
+        // Debounce function to limit Firestore reads on input
+        let debounceTimer;
+        function debounce(func, delay) {
+            return function(...args) {
+                clearTimeout(debounceTimer);
+                debounceTimer = setTimeout(() => func.apply(this, args), delay);
+            };
+        }
+
+        // Auto-fetch team name based on team code
+        joinTeamIdInput.addEventListener('input', debounce(async () => {
+            const teamCode = joinTeamIdInput.value.trim();
+            if (teamCode) {
+                try {
+                    const teamDoc = await teamsCollection.doc(teamCode).get();
+                    if (teamDoc.exists) {
+                        joinTeamNameInput.value = teamDoc.data().teamName || '';
+                        joinTeamNameInput.readOnly = true; // Make it read-only if found
+                    } else {
+                        joinTeamNameInput.value = '';
+                        joinTeamNameInput.readOnly = false; // Keep it editable if not found
+                        // Optionally, show a temporary message to the user
+                        // console.log("Team code not found."); 
+                    }
+                } catch (error) {
+                    console.error("Error fetching team details:", error);
+                    joinTeamNameInput.value = '';
+                    joinTeamNameInput.readOnly = false;
+                }
+            } else {
+                joinTeamNameInput.value = '';
+                joinTeamNameInput.readOnly = false;
+            }
+        }, 500)); // 500ms debounce delay
+
+
+        // --- Step 2: Transition from Join to Pay Modal / Direct Confirmation for Free Tournaments ---
+        confirmJoinBtn.addEventListener("click", async () => {
             const teamCode = joinTeamIdInput.value.trim();
             const teamName = joinTeamNameInput.value.trim(); 
             if (!teamCode || !teamName) { 
                 alert("Please enter both Team Code and Team Name.");
                 return;
             }
+            
+            // Validate team code existence in the 'teams' collection
+            try {
+                const teamDoc = await teamsCollection.doc(teamCode).get();
+                if (!teamDoc.exists) {
+                    alert("The entered Team Code does not exist. Please enter a valid team code.");
+                    return;
+                }
+                // If team name was manually entered and doesn't match fetched, alert
+                if (teamDoc.data().teamName && teamDoc.data().teamName !== teamName && joinTeamNameInput.readOnly === false) {
+                    alert(`The team name "${teamName}" does not match the registered name for team code "${teamCode}". Please use "${teamDoc.data().teamName}".`);
+                    joinTeamNameInput.value = teamDoc.data().teamName; // Auto-correct
+                    joinTeamNameInput.readOnly = true;
+                    return;
+                }
+            } catch (error) {
+                console.error("Error validating team code:", error);
+                alert("An error occurred while validating your team code. Please try again.");
+                return;
+            }
+
             enteredTeamCode = teamCode; 
             enteredTeamName = teamName; 
             joinModal.style.display = "none"; 
             
-            // Set UPI ID display
-            upiIdDisplay.value = UPI_ID; // Set the UPI ID
-
-            if (selectedTournamentForPayment) {
-                paymentAmountDisplay.textContent = `₹${selectedTournamentForPayment.entryFee}`;
+            if (selectedTournamentForPayment.entryFee === 0) {
+                // Directly proceed to confirmation for free tournaments
+                await sendPaymentConfirmationRequest(true); // true means auto-confirm
             } else {
-                paymentAmountDisplay.textContent = `the specified entry fee`; // Fallback
+                // For paid tournaments, show the payment modal
+                upiIdDisplay.value = UPI_ID; // Set the UPI ID
+                paymentAmountDisplay.textContent = `₹${selectedTournamentForPayment.entryFee}`;
+                upiNameInput.value = ""; 
+                payModal.style.display = "flex"; 
             }
-
-            upiNameInput.value = ""; 
-            payModal.style.display = "flex"; 
         });
 
         // --- New: Open Scanner Button Click ---
@@ -1061,7 +1141,13 @@
         // --- New: Copy UPI ID Button Click ---
         copyUpiIdBtn.addEventListener("click", async () => {
             try {
-                await navigator.clipboard.writeText(upiIdDisplay.value);
+                // Using document.execCommand('copy') for broader iframe compatibility
+                const tempInput = document.createElement('textarea');
+                tempInput.value = upiIdDisplay.value;
+                document.body.appendChild(tempInput);
+                tempInput.select();
+                document.execCommand('copy');
+                document.body.removeChild(tempInput);
                 alert("UPI ID copied to clipboard!");
             } catch (err) {
                 console.error('Failed to copy UPI ID: ', err);
@@ -1072,16 +1158,22 @@
 
         // --- Final Step: Send Payment Confirmation Request ---
         confirmPayBtn.addEventListener("click", async () => {
-            const upiName = upiNameInput.value.trim();
+            await sendPaymentConfirmationRequest(false); // false means manual confirmation needed
+        });
 
-            if (!enteredTeamCode || !enteredTeamName || !currentTournamentIdForPayment || !upiName) { 
+        async function sendPaymentConfirmationRequest(autoConfirm = false) {
+            const upiName = autoConfirm ? "N/A (Free Tournament)" : upiNameInput.value.trim();
+
+            if (!enteredTeamCode || !enteredTeamName || !currentTournamentIdForPayment || (!autoConfirm && !upiName)) { 
                 alert("Missing team information, tournament details, or UPI Name. Please go back and try again.");
                 waitingOverlay.style.display = 'none'; 
                 return;
             }
 
-            payModal.style.display = "none";
-            waitingMessage.textContent = "Sending payment request...";
+            if (!autoConfirm) {
+                payModal.style.display = "none";
+            }
+            waitingMessage.textContent = autoConfirm ? "Registering your team..." : "Sending payment request...";
             waitingOverlay.style.display = "flex";
 
             const tournamentRef = tournamentsCollection.doc(currentTournamentIdForPayment);
@@ -1094,39 +1186,25 @@
                 return;
             }
 
-            // Perform non-blocking team code lookup to warn user if code is not recognized
-            try {
-                // Modified to query the `teams` collection directly if `teamsCollection` is defined
-                // This assumes your `teams` collection documents have a `requests` map with `teamCode`
-                if (typeof teamsCollection !== 'undefined') {
-                    const teamSnapshot = await teamsCollection.where("requests.teamCode", "==", enteredTeamCode).limit(1).get();
-                    if (teamSnapshot.empty) {
-                        alert("If your team code was not correct then your data cannot be added in records");
-                    }
-                } else {
-                    console.warn("teamsCollection is not defined. Skipping team code validation.");
-                }
-            } catch (error) {
-                console.error("Error verifying team code:", error);
-                alert("An error occurred while verifying your team code. Please try again.");
-                waitingOverlay.style.display = 'none';
-                return; 
-            }
-
-            // The team name to be used for submission is directly from user input
             const teamIdForSubmission = enteredTeamCode;
             const teamNameForSubmission = enteredTeamName; 
 
-            // Check if team is already registered (confirm:true) or has a pending payment request (confirm:false)
-            const isAlreadyRegisteredOrPending = tournament.pending_payment_confirmations && tournament.pending_payment_confirmations.some(p =>
-                p.team_id === teamIdForSubmission && p.requested_by_user_id === currentUserId
+            // --- IMPORTANT: Enhanced Duplicate Registration/Request Check ---
+            const existingRequestForTeam = tournament.pending_payment_confirmations && tournament.pending_payment_confirmations.find(p =>
+                p.team_id === teamIdForSubmission
             );
 
-            if (isAlreadyRegisteredOrPending) {
-                alert(`Your team "${teamNameForSubmission}" (Code: ${teamIdForSubmission}) is already registered or has a pending request for this tournament.`);
+            if (existingRequestForTeam) {
+                if (existingRequestForTeam.confirm === true) {
+                    alert(`Your team "${teamNameForSubmission}" (Code: ${teamIdForSubmission}) is already REGISTERED for this tournament.`);
+                } else {
+                    alert(`A registration request for your team "${teamNameForSubmission}" (Code: ${teamIdForSubmission}) has already been SENT and is pending confirmation for this tournament.`);
+                }
                 waitingOverlay.style.display = 'none';
                 return;
             }
+            // --- End of Enhanced Check ---
+
 
             if (tournament.status !== 'active') {
                 alert("This tournament is not active and cannot be joined.");
@@ -1148,14 +1226,18 @@
                 upi_name: upiName,
                 payment_request_timestamp: new Date().toISOString(),
                 requested_by_user_id: currentUserId,
-                confirm: false 
+                confirm: autoConfirm // This is the key change: true for free, false for paid
             };
 
             try {
                 await tournamentRef.update({
                     pending_payment_confirmations: firebase.firestore.FieldValue.arrayUnion(newPaymentConfirmationRequest)
                 });
-                alert("Your payment request has been sent to the admin. Your team will be added after confirmation.");
+                if (autoConfirm) {
+                    alert(`Your team "${teamNameForSubmission}" has been successfully registered for the free tournament "${tournament.name}"!`);
+                } else {
+                    alert("Your payment request has been sent to the admin. Your team will be added after confirmation.");
+                }
                 enteredTeamCode = null; 
                 enteredTeamName = null; 
                 currentTournamentIdForPayment = null;
@@ -1166,7 +1248,7 @@
             } finally {
                 waitingOverlay.style.display = 'none';
             }
-        });
+        }
 
 
         // Admin Create Tournament Logic
