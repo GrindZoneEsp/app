@@ -3,168 +3,267 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sign Up | GRINDZONE</title>
+  <title>Sign Up | GrindZone</title>
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
       margin: 0;
-      padding: 0;
-      background: linear-gradient(to bottom right, #ffffff, #f0f0f0);
       font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(to bottom right, #f0f4ff, #e0e7ff);
       display: flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
       height: 100vh;
-      color: #333;
     }
 
     .container {
-      background-color: #fff;
+      background: white;
       padding: 40px 30px;
-      border-radius: 12px;
-      box-shadow: 0 8px 24px rgba(0,0,0,0.1);
-      max-width: 400px;
+      border-radius: 18px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
       width: 100%;
-      text-align: center;
+      max-width: 400px;
+      position: relative;
     }
 
     .logo {
-      display: flex;
-      justify-content: center;
-      align-items: center;
+      text-align: center;
       margin-bottom: 30px;
-      gap: 12px;
     }
 
     .logo img {
-      width: 50px;
-      height: 50px;
+      width: 55px;
+      height: 55px;
       border-radius: 10px;
     }
 
-    .logo span {
+    .logo h1 {
       font-size: 1.8rem;
-      font-weight: bold;
-      color: #5c6ac4;
+      margin-top: 10px;
+      color: #4752b3;
     }
 
-    input {
+    .input-group {
+      position: relative;
+      margin-bottom: 20px;
+    }
+
+    .input-group input {
       width: 100%;
-      padding: 14px;
-      margin: 12px 0;
-      border: 1px solid #ccc;
-      border-radius: 8px;
+      padding: 14px 44px 14px 14px;
       font-size: 15px;
-      background-color: #f9f9f9;
+      border: 1px solid #ccc;
+      border-radius: 10px;
+      background: #f9f9f9;
+    }
+
+    .input-group .toggle-password {
+      position: absolute;
+      right: 12px;
+      top: 50%;
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: 18px;
+      color: #777;
     }
 
     button {
       width: 100%;
       padding: 14px;
-      margin-top: 15px;
-      border: none;
-      border-radius: 8px;
-      font-size: 16px;
-      font-weight: 600;
-      background-color: #5c6ac4;
+      background-color: #4752b3;
       color: white;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 16px;
       cursor: pointer;
-      transition: all 0.3s ease;
+      margin-top: 10px;
+      transition: 0.3s;
     }
 
     button:hover {
-      background-color: #4752b3;
+      background-color: #3540a3;
     }
 
     .secondary-btn {
       background-color: transparent;
-      color: #5c6ac4;
-      border: 2px solid #5c6ac4;
+      border: 2px solid #4752b3;
+      color: #4752b3;
     }
 
     .secondary-btn:hover {
-      background-color: #5c6ac4;
+      background-color: #4752b3;
       color: white;
     }
 
     .footer {
       margin-top: 20px;
-      font-size: 13px;
+      text-align: center;
+      font-size: 14px;
     }
 
     .footer a {
-      color: #5c6ac4;
+      color: #4752b3;
       text-decoration: none;
     }
 
     .footer a:hover {
       text-decoration: underline;
     }
+
+    /* Popup styling */
+    .popup {
+      position: fixed;
+      top: 0;
+      left: 0;
+      height: 100vh;
+      width: 100vw;
+      background-color: rgba(0, 0, 0, 0.6);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 999;
+    }
+
+    .popup-content {
+      background-color: white;
+      padding: 30px;
+      border-radius: 12px;
+      max-width: 350px;
+      width: 100%;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      text-align: center;
+      position: relative;
+    }
+
+    .popup-content h2 {
+      margin-top: 0;
+      color: #4752b3;
+    }
+
+    .popup-content button {
+      margin-top: 20px;
+      width: auto;
+      padding: 10px 20px;
+    }
+
+    .popup-close {
+      position: absolute;
+      top: 12px;
+      right: 16px;
+      font-size: 22px;
+      color: #888;
+      cursor: pointer;
+    }
+
+    .popup-close:hover {
+      color: #000;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        margin: 20px;
+        padding: 30px 20px;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="logo">
-      <img src="https://i.ibb.co/LhxDvVJk/grindzone.png" alt="GRINDZONE Logo">
-      <span>GRINDZONE</span>
+      <img src="img/logo.jpeg" alt="GrindZone Logo">
+      <h1>GrindZone</h1>
     </div>
 
-    <input type="email" id="signupEmail" placeholder="Email" />
-    <input type="password" id="signupPassword" placeholder="Password" />
-    <button onclick="signUpUser()">Sign Up</button>
+    <div class="input-group">
+      <input type="email" id="signupEmail" placeholder="Email" />
+    </div>
 
-    <button class="secondary-btn" onclick="window.location.href='index.html'">Back to Login</button>
+    <div class="input-group">
+      <input type="password" id="signupPassword" placeholder="Password" />
+      <span class="toggle-password" onclick="togglePassword(this)">👁️</span>
+    </div>
+
+    <button onclick="signUpUser()">Sign Up</button>
+    <button class="secondary-btn" onclick="window.location.href='l.html'">Back to Login</button>
 
     <div class="footer">
       Already have an account? <a href="index.html">Login</a>
     </div>
   </div>
 
+  <!-- Already logged in popup -->
+  <div id="alreadyPopup" class="popup" style="display: none;">
+    <div class="popup-content">
+      <span class="popup-close" onclick="document.getElementById('alreadyPopup').style.display='none'">&times;</span>
+      <h2>You're already signed in!</h2>
+      <p>Click below to go to the main page.</p>
+      <button onclick="window.location.href='main.html'">Go to Main Page</button>
+    </div>
+  </div>
+
   <!-- Firebase SDKs -->
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyBgqgQDWEwohMJnhTcUhBx6chmXOUMSanw",
-    authDomain: "grindzone-26ee9.firebaseapp.com",
-    projectId: "grindzone-26ee9",
-    storageBucket: "grindzone-26ee9.appspot.com",
-    messagingSenderId: "457720848561",
-    appId: "1:457720848561:web:f2cde2e7e7542b2a9d8290"
-  };
 
-  firebase.initializeApp(firebaseConfig);
-  const auth = firebase.auth();
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyBgqgQDWEwohMJnhTcUhBx6chmXOUMSanw",
+      authDomain: "grindzone-26ee9.firebaseapp.com",
+      projectId: "grindzone-26ee9",
+      storageBucket: "grindzone-26ee9.appspot.com",
+      messagingSenderId: "457720848561",
+      appId: "1:457720848561:web:f2cde2e7e7542b2a9d8290"
+    };
 
-  function signUpUser() {
-    const email = document.getElementById("signupEmail").value.trim();
-    const password = document.getElementById("signupPassword").value;
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
 
-    if (!email || !password) {
-      alert("Please enter both email and password.");
-      return;
+    // Redirect if already logged in
+    auth.onAuthStateChanged(user => {
+      if (user) {
+        document.getElementById("alreadyPopup").style.display = "flex";
+      }
+    });
+
+    function togglePassword(icon) {
+      const passwordField = document.getElementById("signupPassword");
+      const isPassword = passwordField.type === "password";
+      passwordField.type = isPassword ? "text" : "password";
     }
 
-    if (password.length < 8) {
-      alert("Password must be at least 8 characters.");
-      return;
+    function signUpUser() {
+      const email = document.getElementById("signupEmail").value.trim();
+      const password = document.getElementById("signupPassword").value;
+
+      if (!email || !password) {
+        alert("Please enter both email and password.");
+        return;
+      }
+
+      if (password.length < 8) {
+        alert("Password must be at least 8 characters.");
+        return;
+      }
+
+      auth.createUserWithEmailAndPassword(email, password)
+        .then(() => {
+          alert("Signup successful!");
+          window.location.href = "info.html";
+        })
+        .catch(error => {
+          if (error.code === "auth/email-already-in-use") {
+            alert("This email is already in use.");
+          } else if (error.code === "auth/invalid-email") {
+            alert("Please enter a valid email address.");
+          } else {
+            alert("Error: " + error.message);
+          }
+        });
     }
-
-    auth.createUserWithEmailAndPassword(email, password)
-      .then(userCredential => {
-        alert("Signup successful!");
-        window.location.href = "info.html";
-      })
-      .catch(error => {
-        if (error.code === "auth/email-already-in-use") {
-          alert("This email is already in use.");
-        } else if (error.code === "auth/invalid-email") {
-          alert("Please enter a valid email address.");
-        } else {
-          alert("Error: " + error.message);
-        }
-      });
-  }
-</script>
-
+  </script>
 </body>
 </html>
