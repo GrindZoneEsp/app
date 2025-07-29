@@ -502,15 +502,13 @@
     <div class="header">
         <img src="https://i.ibb.co/LhxDvVJk/grindzone.png" alt="GRINDZONE Logo" style="height: 50px; vertical-align: middle; margin-right: 15px;">
         <h1>Tournament Hub</h1>
-        <p class="user-info">Logged in as: <span id="currentUserNameDisplay">Loading...</span></p>
         <div class="admin-button-container">
             <button id="adminCreateTournamentBtn" class="admin-button admin-button-hidden">Create Tournament</button>
         </div>
     </div>
 
     <div class="content">
-        <div id="userJoinedTournamentsSection">
-            <section class="joined-tournaments-section">
+        <div id="userJoinedTournamentsSection" style="display: none;"> <section class="joined-tournaments-section">
                 <h2>Your Joined Tournaments</h2>
                 <div id="userJoinedTeamsList">
                     <p class="no-items-message" id="noJoinedTeamsMessage" style="display: block;">
@@ -530,7 +528,7 @@
         </section>
 
         <button id="toggleJoinedTournamentsBtn" class="toggle-section-button">
-            Hide Your Joined Tournaments
+            Show Your Joined Tournaments
         </button>
     </div>
 
@@ -656,27 +654,23 @@
         const db = firebase.firestore();
         const auth = firebase.auth();
         const tournamentsCollection = db.collection('tournaments');
-        // Assuming 'teams' collection exists where teamCode is the document ID and it has a 'teamName' field
         const teamsCollection = db.collection('teams'); 
         const usersCollection = db.collection('users');
 
         let allTournaments = [];
         let currentUserId = null;
-        let currentUserName = "Guest";
         let isAdmin = false;
 
         let currentTournamentIdForPayment = null; 
         let enteredTeamCode = null; 
         let enteredTeamName = null; 
-        let selectedTournamentForPayment = null; // New global variable to hold the tournament object
+        let selectedTournamentForPayment = null; 
 
         // --- Payment specific constants ---
         const QR_CODE_IMAGE_URL = "https://ibb.co/rR7wghXf";
-        // !! IMPORTANT: CHANGE THIS TO YOUR ACTUAL UPI ID !!
         const UPI_ID = "yashgz09@fam"; 
 
         // --- DOM Elements ---
-        const currentUserNameDisplay = document.getElementById('currentUserNameDisplay');
         const adminCreateTournamentBtn = document.getElementById('adminCreateTournamentBtn');
         const tournamentListDiv = document.getElementById("tournamentList");
         const noTournamentsMessage = document.getElementById("noTournamentsMessage");
@@ -690,7 +684,7 @@
         const joinModal = document.getElementById('joinModal');
         const payModal = document.getElementById('payModal');
         const createTournamentModal = document.getElementById('createTournamentModal');
-        const viewDetailsModal = document.getElementById('viewDetailsModal'); // NEW
+        const viewDetailsModal = document.getElementById('viewDetailsModal'); 
         const waitingOverlay = document.getElementById('waitingOverlay');
         const waitingMessage = document.getElementById('waitingMessage');
 
@@ -702,22 +696,22 @@
         const joinTeamNameInput = document.getElementById('joinTeamNameInput'); 
         const confirmJoinBtn = document.getElementById('confirmJoinBtn');
 
-        // Pay Modal Inputs (UPDATED)
+        // Pay Modal Inputs
         const paymentAmountDisplay = document.getElementById('paymentAmountDisplay'); 
-        const openScannerBtn = document.getElementById('openScannerBtn'); // NEW
-        const upiIdDisplay = document.getElementById('upiIdDisplay'); // NEW
-        const copyUpiIdBtn = document.getElementById('copyUpiIdBtn'); // NEW
+        const openScannerBtn = document.getElementById('openScannerBtn'); 
+        const upiIdDisplay = document.getElementById('upiIdDisplay'); 
+        const copyUpiIdBtn = document.getElementById('copyUpiIdBtn'); 
         const upiNameInput = document.getElementById('upiNameInput');
         const confirmPayBtn = document.getElementById('confirmPayBtn');
 
-        // View Details Modal Elements (NEW)
+        // View Details Modal Elements
         const viewDetailsTournamentName = document.getElementById('viewDetailsTournamentName');
         const viewDetailsTeamName = document.getElementById('viewDetailsTeamName');
         const viewDetailsGameId = document.getElementById('viewDetailsGameId');
         const viewDetailsGamePassword = document.getElementById('viewDetailsGamePassword');
         const viewDetailsRulesLink = document.getElementById('viewDetailsRulesLink');
-        const viewDetailsRegisteredTeamsList = document.getElementById('viewDetailsRegisteredTeamsList'); // NEW
-        const viewDetailsTopTeams = document.getElementById('viewDetailsTopTeams'); // NEW for Top 3 Teams
+        const viewDetailsRegisteredTeamsList = document.getElementById('viewDetailsRegisteredTeamsList'); 
+        const viewDetailsTopTeams = document.getElementById('viewDetailsTopTeams'); 
 
 
         // Close buttons for modals
@@ -726,14 +720,13 @@
                 joinModal.style.display = 'none';
                 payModal.style.display = 'none';
                 createTournamentModal.style.display = 'none';
-                viewDetailsModal.style.display = 'none'; // NEW
+                viewDetailsModal.style.display = 'none'; 
                 enteredTeamCode = null; 
                 enteredTeamName = null; 
-                selectedTournamentForPayment = null; // Clear selected tournament on close
-                // Reset join modal inputs
+                selectedTournamentForPayment = null; 
                 joinTeamIdInput.value = '';
                 joinTeamNameInput.value = '';
-                joinTeamNameInput.readOnly = false; // Make it editable again
+                joinTeamNameInput.readOnly = false; 
             };
         });
         window.onclick = (event) => {
@@ -749,12 +742,12 @@
                 payModal.style.display = 'none';
                 enteredTeamCode = null;
                 enteredTeamName = null;
-                selectedTournamentForPayment = null; // Clear selected tournament on close
+                selectedTournamentForPayment = null; 
             }
             if (event.target == createTournamentModal) {
                 createTournamentModal.style.display = 'none';
             }
-            if (event.target == viewDetailsModal) { // NEW
+            if (event.target == viewDetailsModal) { 
                 viewDetailsModal.style.display = 'none';
             }
         };
@@ -767,24 +760,18 @@
                     const userDoc = await usersCollection.doc(currentUserId).get();
                     if (userDoc.exists) {
                         const userData = userDoc.data();
-                        currentUserName = userData.realName || "Unknown User";
                         isAdmin = (typeof userData.isAdmin === 'boolean') ? userData.isAdmin : (userData.isAdmin === 'true');
                     } else {
-                        currentUserName = "New User";
                         isAdmin = false;
                     }
                 } catch (error) {
                     console.error("Error fetching user data:", error);
-                    currentUserName = "Error User";
                     isAdmin = false;
                 }
             } else {
                 currentUserId = null;
-                currentUserName = "Guest (Please Login)";
                 isAdmin = false;
             }
-
-            currentUserNameDisplay.textContent = currentUserName;
             
             if (isAdmin) {
                 adminCreateTournamentBtn.classList.remove('admin-button-hidden');
@@ -795,10 +782,10 @@
             } else {
                 adminCreateTournamentBtn.classList.remove('admin-button-visible');
                 adminCreateTournamentBtn.classList.add('admin-button-hidden');
-                // For regular users, joined section is visible by default
-                userJoinedTournamentsSection.style.display = 'block'; 
-                toggleJoinedTournamentsBtn.style.display = 'block'; // Toggle button is visible
-                toggleJoinedTournamentsBtn.textContent = 'Hide Your Joined Tournaments'; // Set initial text
+                // For regular users, joined section is hidden by default, toggle button is visible
+                userJoinedTournamentsSection.style.display = 'none'; 
+                toggleJoinedTournamentsBtn.style.display = 'block'; 
+                toggleJoinedTournamentsBtn.textContent = 'Show Your Joined Tournaments'; 
             }
 
             setupRealtimeListener();
@@ -806,12 +793,19 @@
 
         // --- Toggle Joined Tournaments Section ---
         toggleJoinedTournamentsBtn.addEventListener('click', () => {
-            if (userJoinedTournamentsSection.style.display === 'none') {
-                userJoinedTournamentsSection.style.display = 'block';
-                toggleJoinedTournamentsBtn.textContent = 'Hide Your Joined Tournaments';
+            // Only toggle if a user is logged in
+            if (currentUserId) {
+                if (userJoinedTournamentsSection.style.display === 'none') {
+                    userJoinedTournamentsSection.style.display = 'block';
+                    toggleJoinedTournamentsBtn.textContent = 'Hide Your Joined Tournaments';
+                } else {
+                    userJoinedTournamentsSection.style.display = 'none';
+                    toggleJoinedTournamentsBtn.textContent = 'Show Your Joined Tournaments';
+                }
             } else {
-                userJoinedTournamentsSection.style.display = 'none';
-                toggleJoinedTournamentsBtn.textContent = 'Show Your Joined Tournaments';
+                // If not logged in, clicking the toggle button redirects to login
+                alert("Please log in to view your joined tournaments.");
+                window.location.href = 'index.html'; 
             }
         });
 
@@ -820,7 +814,6 @@
         function renderAllTournaments() {
             tournamentListDiv.innerHTML = "";
             
-            // This array will hold the full tournament objects for tournaments the user has joined
             const userJoinedTournamentsData = []; 
 
             if (allTournaments.length === 0) {
@@ -847,19 +840,17 @@
                 if (currentUserId) {
                     // Check if the current user's team (by team_id) is already confirmed or pending for THIS tournament
                     const userTeamStatus = tournament.pending_payment_confirmations && tournament.pending_payment_confirmations.find(p =>
-                        p.requested_by_user_id === currentUserId // Check if *this user* has a record
+                        p.requested_by_user_id === currentUserId 
                     );
 
                     if (userTeamStatus && userTeamStatus.confirm === true) {
                         statusMessage = `Your Team (${userTeamStatus.team_name}): <span class="status-paid">REGISTERED</span>`;
                         
-                        // Push the entire tournament object to be processed by renderUserConfirmedTeams
                         userJoinedTournamentsData.push({
-                            ...tournament, // Spread all tournament properties
-                            _userTeamName: userTeamStatus.team_name // Add user's team name for easy access
+                            ...tournament, 
+                            _userTeamName: userTeamStatus.team_name 
                         });
 
-                        // For the main tournament list, show a "View Details" button
                         actionButton = `<button class="view-btn" 
                                         data-tournament-id="${tournament.id}" 
                                         data-user-team-name="${userTeamStatus.team_name}">View Details</button>`;
@@ -871,21 +862,43 @@
                         actionButton = `<button class="join-btn" data-id="${tournament.id}">Join Tournament</button>`; 
                     } else if (isFull) {
                         statusMessage = `<span class="status-completed">TOURNAMENT FULL</span>`;
+                        actionButton = `<button class="status-button" disabled>Tournament Full</button>`; // Added disabled button for full
                     } else if (!isActive) {
                         statusMessage = `<span class="status-completed">TOURNAMENT ${tournament.status.toUpperCase()}</span>`;
+                        actionButton = `<button class="status-button" disabled>Not Active</button>`; // Added disabled button for not active
                     }
                 } else {
-                    statusMessage = `Please log in to join or manage teams.`;
-                    actionButton = `<button class="status-button" disabled>Login to Join</button>`;
+                    // For non-logged-in users, always show "Join Tournament" button if available to join
+                    if (!isFull && isActive) {
+                        actionButton = `<button class="join-btn" data-id="${tournament.id}">Join Tournament</button>`; 
+                    } else if (isFull) {
+                        statusMessage = `<span class="status-completed">TOURNAMENT FULL</span>`;
+                        actionButton = `<button class="status-button" disabled>Tournament Full</button>`;
+                    } else if (!isActive) {
+                        statusMessage = `<span class="status-completed">TOURNAMENT ${tournament.status.toUpperCase()}</span>`;
+                        actionButton = `<button class="status-button" disabled>Not Active</button>`;
+                    }
+                    // No 'statusMessage' for "Please log in" here, as the action button handles the redirection.
                 }
 
                 const entryFeeDisplay = isFreeTournament ? `<span class="free-entry">Free</span>` : `₹${tournament.entryFee}`;
+
+                // Format date to 12-hour format
+                const tournamentDate = new Date(tournament.date);
+                const formattedDate = tournamentDate.toLocaleString('en-IN', {
+                    year: 'numeric',
+                    month: 'numeric',
+                    day: 'numeric',
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    hour12: true 
+                });
 
 
                 card.innerHTML = `
                     <h3>${tournament.name}</h3>
                     <p><strong>Game:</strong> ${tournament.game}</p>
-                    <p><strong>Date:</strong> ${new Date(tournament.date).toLocaleString()}</p>
+                    <p><strong>Date:</strong> ${formattedDate}</p>
                     <p><strong>Entry Fee:</strong> ${entryFeeDisplay}</p>
                     <p><strong>Teams:</strong> ${confirmedTeamCount} / ${tournament.maxTeams}</p>
                     <p><strong>Matches:</strong> ${tournament.numMatches || 'N/A'}</p>
@@ -899,8 +912,16 @@
                 tournamentListDiv.appendChild(card);
             });
 
-            renderUserConfirmedTeams(userJoinedTournamentsData); // Pass the full data
-            addEventListenersToButtons(); // Re-add listeners after rendering
+            // Only render user-joined teams if logged in
+            if (currentUserId) {
+                renderUserConfirmedTeams(userJoinedTournamentsData); 
+            } else {
+                userJoinedTeamsListDiv.innerHTML = `<p class="no-items-message" id="noJoinedTeamsMessage" style="display: block;">
+                    Please log in to see your joined tournaments.
+                </p>`;
+            }
+            
+            addEventListenersToButtons(); 
         }
 
         // Renders the section "Your Joined Tournaments" with a simpler card for each user's team
@@ -908,14 +929,13 @@
             userJoinedTeamsListDiv.innerHTML = "";
             if (joinedTournaments.length === 0) {
                 noJoinedTeamsMessage.style.display = "block";
-                noJoinedTeamsMessage.textContent = currentUserId ? "You haven't joined any confirmed tournaments yet." : "Please log in to see your joined tournaments.";
+                noJoinedTeamsMessage.textContent = "You haven't joined any confirmed tournaments yet.";
             } else {
                 noJoinedTeamsMessage.style.display = "none";
                 joinedTournaments.forEach(tournament => {
                     const teamCard = document.createElement("div");
                     teamCard.className = "joined-team-card";
                     
-                    // The View button in this section now also opens the new modal
                     const viewButtonHtml = `
                         <button class="view-btn" 
                                 data-tournament-id="${tournament.id}" 
@@ -939,16 +959,27 @@
         function addEventListenersToButtons() {
             // Event listener for "Join Tournament" buttons
             document.querySelectorAll(".join-btn").forEach(button => {
-                button.onclick = (event) => openJoinModal(event.target.dataset.id); 
+                button.onclick = (event) => {
+                    if (!currentUserId) {
+                        alert("Please log in to join a tournament.");
+                        window.location.href = 'index.html'; // Redirect to index.html
+                        return;
+                    }
+                    openJoinModal(event.target.dataset.id); 
+                };
             });
 
             // Event listener for all "View Details" buttons (both in main list and joined list)
             document.querySelectorAll(".view-btn").forEach(button => {
                 button.onclick = (event) => {
+                    if (!currentUserId) {
+                        alert("Please log in to view tournament details.");
+                        window.location.href = 'index.html'; // Redirect to index.html
+                        return;
+                    }
                     const tournamentId = event.target.dataset.tournamentId;
                     const userTeamName = event.target.dataset.userTeamName;
                     
-                    // Find the full tournament object
                     const tournament = allTournaments.find(t => t.id === tournamentId);
 
                     if (!tournament) {
@@ -956,20 +987,18 @@
                         return;
                     }
 
-                    // Populate the new View Details Modal
                     viewDetailsTournamentName.textContent = `Details for ${tournament.name}`;
                     viewDetailsTeamName.textContent = userTeamName;
                     viewDetailsGameId.textContent = tournament.common_id_password ? tournament.common_id_password.id || "N/A" : "N/A";
                     viewDetailsGamePassword.textContent = tournament.common_id_password ? tournament.common_id_password.password || "N/A" : "N/A";
 
-                    // Populate registered teams list
-                    viewDetailsRegisteredTeamsList.innerHTML = ''; // Clear previous list
+                    viewDetailsRegisteredTeamsList.innerHTML = ''; 
                     const confirmedTeams = tournament.pending_payment_confirmations ? 
                                            tournament.pending_payment_confirmations.filter(p => p.confirm === true) : [];
                     
                     for (let i = 1; i <= tournament.maxTeams; i++) {
                         const slotItem = document.createElement("li");
-                        const teamInSlot = confirmedTeams[i - 1]; // Assuming order for display
+                        const teamInSlot = confirmedTeams[i - 1]; 
                         
                         let teamNameDisplay = "Empty Slot";
                         let myTeamIndicator = '';
@@ -989,20 +1018,19 @@
                         viewDetailsRegisteredTeamsList.appendChild(slotItem);
                     }
 
-                    // NEW: Populate Top 3 Teams field
                     viewDetailsTopTeams.value = tournament.topTeams ? 
                                                  (Array.isArray(tournament.topTeams) ? tournament.topTeams.join(', ') : tournament.topTeams) :
                                                  "Not yet announced";
 
 
-                    if (tournament.rulesLink && tournament.rulesLink !== 'undefined' && tournament.rulesLink !== '') { // Check for empty string too
+                    if (tournament.rulesLink && tournament.rulesLink !== 'undefined' && tournament.rulesLink !== '') { 
                         viewDetailsRulesLink.href = tournament.rulesLink;
-                        viewDetailsRulesLink.style.display = 'block'; // Show the link
+                        viewDetailsRulesLink.style.display = 'block'; 
                     } else {
-                        viewDetailsRulesLink.style.display = 'none'; // Hide if no link
+                        viewDetailsRulesLink.style.display = 'none'; 
                     }
 
-                    viewDetailsModal.style.display = 'flex'; // Show the modal
+                    viewDetailsModal.style.display = 'flex'; 
                 };
             });
         }
@@ -1024,11 +1052,12 @@
 
         // --- Step 1: Open Join Modal (Team Code & Name Entry) ---
         async function openJoinModal(tournamentId) { 
+            // This check is redundant now due to the check in addEventListenersToButtons, but good for safety
             if (!currentUserId) {
                 alert("Please log in to join a tournament.");
+                window.location.href = 'index.html'; 
                 return;
             }
-            // Fetch the specific tournament data here and store it
             const tournamentDoc = await tournamentsCollection.doc(tournamentId).get();
             if (!tournamentDoc.exists) {
                 alert("Tournament not found or has been removed.");
@@ -1039,10 +1068,9 @@
             currentTournamentIdForPayment = tournamentId; 
             joinTeamIdInput.value = ""; 
             joinTeamNameInput.value = ""; 
-            joinTeamNameInput.readOnly = false; // Ensure it's editable initially
+            joinTeamNameInput.readOnly = false; 
             confirmJoinBtn.disabled = false; 
-
-            // If entry fee is 0, change button text and skip to confirmation directly
+            
             if (selectedTournamentForPayment.entryFee === 0) {
                 confirmJoinBtn.textContent = "Confirm Registration (Free)";
             } else {
@@ -1069,12 +1097,10 @@
                     const teamDoc = await teamsCollection.doc(teamCode).get();
                     if (teamDoc.exists) {
                         joinTeamNameInput.value = teamDoc.data().teamName || '';
-                        joinTeamNameInput.readOnly = true; // Make it read-only if found
+                        joinTeamNameInput.readOnly = true; 
                     } else {
                         joinTeamNameInput.value = '';
-                        joinTeamNameInput.readOnly = false; // Keep it editable if not found
-                        // Optionally, show a temporary message to the user
-                        // console.log("Team code not found."); 
+                        joinTeamNameInput.readOnly = false; 
                     }
                 } catch (error) {
                     console.error("Error fetching team details:", error);
@@ -1085,7 +1111,7 @@
                 joinTeamNameInput.value = '';
                 joinTeamNameInput.readOnly = false;
             }
-        }, 500)); // 500ms debounce delay
+        }, 500)); 
 
 
         // --- Step 2: Transition from Join to Pay Modal / Direct Confirmation for Free Tournaments ---
@@ -1097,17 +1123,15 @@
                 return;
             }
             
-            // Validate team code existence in the 'teams' collection
             try {
                 const teamDoc = await teamsCollection.doc(teamCode).get();
                 if (!teamDoc.exists) {
                     alert("The entered Team Code does not exist. Please enter a valid team code.");
                     return;
                 }
-                // If team name was manually entered and doesn't match fetched, alert
                 if (teamDoc.data().teamName && teamDoc.data().teamName !== teamName && joinTeamNameInput.readOnly === false) {
                     alert(`The team name "${teamName}" does not match the registered name for team code "${teamCode}". Please use "${teamDoc.data().teamName}".`);
-                    joinTeamNameInput.value = teamDoc.data().teamName; // Auto-correct
+                    joinTeamNameInput.value = teamDoc.data().teamName; 
                     joinTeamNameInput.readOnly = true;
                     return;
                 }
@@ -1122,11 +1146,9 @@
             joinModal.style.display = "none"; 
             
             if (selectedTournamentForPayment.entryFee === 0) {
-                // Directly proceed to confirmation for free tournaments
-                await sendPaymentConfirmationRequest(true); // true means auto-confirm
+                await sendPaymentConfirmationRequest(true); 
             } else {
-                // For paid tournaments, show the payment modal
-                upiIdDisplay.value = UPI_ID; // Set the UPI ID
+                upiIdDisplay.value = UPI_ID; 
                 paymentAmountDisplay.textContent = `₹${selectedTournamentForPayment.entryFee}`;
                 upiNameInput.value = ""; 
                 payModal.style.display = "flex"; 
@@ -1135,13 +1157,12 @@
 
         // --- New: Open Scanner Button Click ---
         openScannerBtn.addEventListener("click", () => {
-            window.open(QR_CODE_IMAGE_URL, '_blank'); // Open QR image in new tab
+            window.open(QR_CODE_IMAGE_URL, '_blank'); 
         });
 
         // --- New: Copy UPI ID Button Click ---
         copyUpiIdBtn.addEventListener("click", async () => {
             try {
-                // Using document.execCommand('copy') for broader iframe compatibility
                 const tempInput = document.createElement('textarea');
                 tempInput.value = upiIdDisplay.value;
                 document.body.appendChild(tempInput);
@@ -1158,7 +1179,7 @@
 
         // --- Final Step: Send Payment Confirmation Request ---
         confirmPayBtn.addEventListener("click", async () => {
-            await sendPaymentConfirmationRequest(false); // false means manual confirmation needed
+            await sendPaymentConfirmationRequest(false); 
         });
 
         async function sendPaymentConfirmationRequest(autoConfirm = false) {
@@ -1189,7 +1210,6 @@
             const teamIdForSubmission = enteredTeamCode;
             const teamNameForSubmission = enteredTeamName; 
 
-            // --- IMPORTANT: Enhanced Duplicate Registration/Request Check ---
             const existingRequestForTeam = tournament.pending_payment_confirmations && tournament.pending_payment_confirmations.find(p =>
                 p.team_id === teamIdForSubmission
             );
@@ -1203,8 +1223,6 @@
                 waitingOverlay.style.display = 'none';
                 return;
             }
-            // --- End of Enhanced Check ---
-
 
             if (tournament.status !== 'active') {
                 alert("This tournament is not active and cannot be joined.");
@@ -1226,7 +1244,7 @@
                 upi_name: upiName,
                 payment_request_timestamp: new Date().toISOString(),
                 requested_by_user_id: currentUserId,
-                confirm: autoConfirm // This is the key change: true for free, false for paid
+                confirm: autoConfirm 
             };
 
             try {
@@ -1241,7 +1259,7 @@
                 enteredTeamCode = null; 
                 enteredTeamName = null; 
                 currentTournamentIdForPayment = null;
-                selectedTournamentForPayment = null; // Clear after successful request
+                selectedTournamentForPayment = null; 
             } catch (error) {
                 console.error("Error sending payment request:", error);
                 alert("Failed to send payment request. Please try again.");
@@ -1258,14 +1276,11 @@
                 return;
             }
             createTournamentFormModal.reset();
-            document.getElementById("modalTournamentName").value = ''; // Ensure name field is clear
-            // Set default values for new fields if needed
+            document.getElementById("modalTournamentName").value = ''; 
             document.getElementById("modalTournamentMaxTeams").value = 8;
-            document.getElementById("modalTournamentNumMatches").value = 1; // Default to 1 match
-            document.getElementById("modalTournamentPrizePool").value = 0; // Default to 0 prize pool
+            document.getElementById("modalTournamentNumMatches").value = 1; 
+            document.getElementById("modalTournamentPrizePool").value = 0; 
             document.getElementById("modalTournamentEntryFee").value = 0;
-            // Removed specific QR link input, as it's now hardcoded
-            // document.getElementById("modalTournamentUpiQrLink").value = ''; 
 
             createTournamentModal.style.display = 'flex';
         });
@@ -1282,22 +1297,18 @@
             const game = document.getElementById("modalTournamentGame").value;
             const date = document.getElementById("modalTournamentDate").value;
             const entryFee = parseFloat(document.getElementById("modalTournamentEntryFee").value);
-            // Removed UPI QR Code Link fetch, as it's now hardcoded
-            // const upiQrCodeLink = document.getElementById("modalTournamentUpiQrLink").value.trim(); 
             const maxTeams = parseInt(document.getElementById("modalTournamentMaxTeams").value);
             const numMatches = parseInt(document.getElementById("modalTournamentNumMatches").value); 
             const prizePool = parseFloat(document.getElementById("modalTournamentPrizePool").value); 
-            const rulesLink = ''; // Set rulesLink to an empty string by default, as the input was removed
+            const rulesLink = ''; 
 
             const status = document.getElementById("modalTournamentStatus").value;
 
-            // Updated validation - removed upiQrCodeLink check
             if (!name || !game || !date || isNaN(entryFee) || isNaN(maxTeams) || isNaN(numMatches) || isNaN(prizePool)) { 
                 alert("Please fill in all tournament details correctly."); 
                 return;
             }
 
-            // Check if a tournament with this name (ID) already exists
             const tournamentDocRef = tournamentsCollection.doc(name);
             const doc = await tournamentDocRef.get();
             if (doc.exists) {
@@ -1310,7 +1321,6 @@
                 game,
                 date,
                 entryFee,
-                // upiQrCodeLink, // Removed this field
                 maxTeams,
                 numMatches, 
                 prizePool, 
@@ -1325,7 +1335,7 @@
                 created_at: firebase.firestore.FieldValue.serverTimestamp()
             };
             try {
-                await tournamentsCollection.doc(name).set(newTournament); // Use tournament name as doc ID
+                await tournamentsCollection.doc(name).set(newTournament); 
                 createTournamentModal.style.display = 'none';
                 alert(`Tournament "${name}" created successfully!`);
             } catch (error) {
