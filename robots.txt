@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://grindzone.xyz/sitemap.xml
