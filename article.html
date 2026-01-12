@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Articles | GrindZone</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #0b1220;
+      --card: #111827;
+      --primary: #38bdf8;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+    }
+
+    /* HEADER */
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(11,18,32,0.95);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      padding: 12px 5%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .logo img {
+      height: 26px;
+    }
+
+    .logo span {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+
+    .search-icon {
+      font-size: 1.2rem;
+      cursor: pointer;
+      user-select: none;
+    }
+
+    /* SEARCH BAR (HIDDEN BY DEFAULT) */
+    .search-box {
+      display: none;
+      padding: 10px 5% 6px;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 10px 14px;
+      border-radius: 14px;
+      border: 1px solid rgba(255,255,255,0.08);
+      background: #020617;
+      color: var(--text);
+      font-size: 0.9rem;
+      outline: none;
+    }
+
+    .search-box input::placeholder {
+      color: var(--muted);
+    }
+
+    /* TITLE */
+    .page-title {
+      padding: 18px 5% 8px;
+    }
+
+    .page-title h1 {
+      font-size: 1.4rem;
+      margin-bottom: 4px;
+    }
+
+    .page-title p {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+
+    /* ARTICLES */
+    .articles {
+      padding: 10px 5% 60px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .article-card {
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,0.05);
+      border-radius: 16px;
+      padding: 16px;
+      text-decoration: none;
+      color: var(--text);
+      transition: transform 0.2s ease, border 0.2s ease;
+    }
+
+    .article-card:hover {
+      transform: translateY(-2px);
+      border-color: rgba(56,189,248,0.4);
+    }
+
+    .article-title {
+      font-size: 1rem;
+      font-weight: 600;
+      margin-bottom: 6px;
+      line-height: 1.4;
+    }
+
+    .article-desc {
+      font-size: 0.82rem;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .article-meta {
+      margin-top: 8px;
+      font-size: 0.72rem;
+      color: var(--muted);
+    }
+
+    footer {
+      padding: 22px 5%;
+      border-top: 1px solid rgba(255,255,255,0.05);
+      text-align: center;
+      font-size: 0.7rem;
+      color: var(--muted);
+    }
+
+    @media (min-width: 768px) {
+      .articles {
+        max-width: 700px;
+        margin: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo">
+      <img src="https://i.ibb.co/ZRv738N7/grindzone-logo.png" alt="GrindZone">
+      <span>GrindZone</span>
+    </div>
+    <div class="search-icon" onclick="toggleSearch()">🔍</div>
+  </header>
+
+  <!-- SEARCH -->
+  <div class="search-box" id="searchBox">
+    <input type="text" id="searchInput" placeholder="Search articles..." />
+  </div>
+
+  <!-- TITLE -->
+  <div class="page-title">
+    <h1>Articles</h1>
+    <p>Esports stories, history & thoughts</p>
+  </div>
+
+  <!-- ARTICLES LIST -->
+  <div class="articles" id="articlesList">
+
+    <!-- ARTICLE -->
+    <a href="ffcomeback.html"
+       class="article-card"
+       data-keywords="free fire ff ffm free fire max esports india garena ffmic ffpl ban comeback lan">
+      <div class="article-title">
+        The Return of Free Fire MAX Esports in India
+      </div>
+      <div class="article-desc">
+        From the first LAN in 2019 to the ban, silence, and a long-awaited comeback.
+      </div>
+      <div class="article-meta">
+        8 min read • 2025
+      </div>
+    </a>
+
+    <!-- COPY THIS BLOCK FOR NEW ARTICLES -->
+    <!--
+    <a href="new-article.html"
+       class="article-card"
+       data-keywords="bgmi lan india esports tournament">
+      <div class="article-title">Article Title</div>
+      <div class="article-desc">Short description here</div>
+      <div class="article-meta">6 min read • 2026</div>
+    </a>
+  -->
+
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    © 2026 GrindZone • IT'S JUST PASSION
+  </footer>
+
+  <!-- SCRIPT -->
+  <script>
+    const searchBox = document.getElementById('searchBox');
+    const searchInput = document.getElementById('searchInput');
+    const articles = document.querySelectorAll('.article-card');
+
+    function toggleSearch() {
+      if (searchBox.style.display === 'block') {
+        searchBox.style.display = 'none';
+        searchInput.value = '';
+        articles.forEach(a => a.style.display = 'block');
+      } else {
+        searchBox.style.display = 'block';
+        searchInput.focus();
+      }
+    }
+
+    searchInput.addEventListener('input', () => {
+      const query = searchInput.value.toLowerCase();
+
+      articles.forEach(article => {
+        const title = article.querySelector('.article-title').innerText.toLowerCase();
+        const desc = article.querySelector('.article-desc').innerText.toLowerCase();
+        const keywords = article.dataset.keywords.toLowerCase();
+
+        article.style.display =
+          title.includes(query) ||
+          desc.includes(query) ||
+          keywords.includes(query)
+            ? 'block'
+            : 'none';
+      });
+    });
+  </script>
+
+</body>
+</html>
