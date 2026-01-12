@@ -2,268 +2,141 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Sign Up | GrindZone</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>GrindZone</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
   <style>
+    :root {
+      --bg: #0b1220;
+      --card: #111827;
+      --primary: #38bdf8;
+      --text: #e5e7eb;
+      --muted: #9ca3af;
+    }
+
     * {
+      margin: 0;
+      padding: 0;
       box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
     }
 
     body {
-      margin: 0;
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: linear-gradient(to bottom right, #f0f4ff, #e0e7ff);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 100vh;
+      padding: 20px;
     }
 
     .container {
-      background: white;
-      padding: 40px 30px;
-      border-radius: 18px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
       width: 100%;
-      max-width: 400px;
-      position: relative;
+      max-width: 420px;
+      text-align: center;
     }
 
     .logo {
-      text-align: center;
-      margin-bottom: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 14px;
     }
 
     .logo img {
-      width: 55px;
-      height: 55px;
-      border-radius: 10px;
+      height: 38px;
     }
 
-    .logo h1 {
-      font-size: 1.8rem;
-      margin-top: 10px;
-      color: #4752b3;
+    .logo span {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--primary);
     }
 
-    .input-group {
-      position: relative;
-      margin-bottom: 20px;
+    .tagline {
+      font-size: 0.85rem;
+      color: var(--muted);
+      margin-bottom: 40px;
+      letter-spacing: 0.4px;
     }
 
-    .input-group input {
-      width: 100%;
-      padding: 14px 44px 14px 14px;
-      font-size: 15px;
-      border: 1px solid #ccc;
-      border-radius: 10px;
-      background: #f9f9f9;
+    .actions {
+      display: grid;
+      gap: 18px;
     }
 
-    .input-group .toggle-password {
-      position: absolute;
-      right: 12px;
-      top: 50%;
-      transform: translateY(-50%);
-      cursor: pointer;
-      font-size: 18px;
-      color: #777;
-    }
-
-    button {
-      width: 100%;
-      padding: 14px;
-      background-color: #4752b3;
-      color: white;
-      border: none;
-      border-radius: 10px;
+    .action-btn {
+      background: var(--card);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      padding: 22px 20px;
+      font-size: 1.05rem;
       font-weight: 600;
-      font-size: 16px;
-      cursor: pointer;
-      margin-top: 10px;
-      transition: 0.3s;
-    }
-
-    button:hover {
-      background-color: #3540a3;
-    }
-
-    .secondary-btn {
-      background-color: transparent;
-      border: 2px solid #4752b3;
-      color: #4752b3;
-    }
-
-    .secondary-btn:hover {
-      background-color: #4752b3;
-      color: white;
-    }
-
-    .footer {
-      margin-top: 20px;
-      text-align: center;
-      font-size: 14px;
-    }
-
-    .footer a {
-      color: #4752b3;
+      color: var(--text);
       text-decoration: none;
+      transition: transform 0.25s ease, background 0.25s ease, border 0.25s ease;
     }
 
-    .footer a:hover {
-      text-decoration: underline;
+    .action-btn span {
+      display: block;
+      font-size: 0.8rem;
+      font-weight: 400;
+      color: var(--muted);
+      margin-top: 6px;
     }
 
-    /* Popup styling */
-    .popup {
-      position: fixed;
-      top: 0;
-      left: 0;
-      height: 100vh;
-      width: 100vw;
-      background-color: rgba(0, 0, 0, 0.6);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 999;
+    .action-btn:hover {
+      transform: translateY(-3px);
+      background: rgba(56,189,248,0.08);
+      border-color: rgba(56,189,248,0.4);
     }
 
-    .popup-content {
-      background-color: white;
-      padding: 30px;
-      border-radius: 12px;
-      max-width: 350px;
-      width: 100%;
-      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
-      text-align: center;
-      position: relative;
+    .footer-note {
+      margin-top: 40px;
+      font-size: 0.75rem;
+      color: var(--muted);
     }
 
-    .popup-content h2 {
-      margin-top: 0;
-      color: #4752b3;
-    }
-
-    .popup-content button {
-      margin-top: 20px;
-      width: auto;
-      padding: 10px 20px;
-    }
-
-    .popup-close {
-      position: absolute;
-      top: 12px;
-      right: 16px;
-      font-size: 22px;
-      color: #888;
-      cursor: pointer;
-    }
-
-    .popup-close:hover {
-      color: #000;
-    }
-
-    @media (max-width: 480px) {
-      .container {
-        margin: 20px;
-        padding: 30px 20px;
+    @media (max-width: 360px) {
+      .action-btn {
+        padding: 18px;
+        font-size: 0.95rem;
       }
     }
   </style>
 </head>
 <body>
+
   <div class="container">
+
     <div class="logo">
-      <img src="https://i.ibb.co/LhxDvVJk/grindzone.png" alt="GrindZone Logo">
-      <h1>GrindZone</h1>
+      <img src="https://i.ibb.co/ZRv738N7/grindzone-logo.png" alt="GrindZone Logo">
+      <span>GrindZone</span>
     </div>
 
-    <div class="input-group">
-      <input type="email" id="signupEmail" placeholder="Email" />
+    <div class="tagline"> THE REAL GRINDING GROUND</div>
+
+    <div class="actions">
+      <a href="signup.html" class="action-btn">
+        🏆 TOURNAMENTS
+        <span>Join & compete in live events</span>
+      </a>
+
+      <a href="articles.html" class="action-btn">
+        📰 ARTICLES
+        <span>Read stories, history & esports news</span>
+      </a>
     </div>
 
-    <div class="input-group">
-      <input type="password" id="signupPassword" placeholder="Password" />
-      <span class="toggle-password" onclick="togglePassword(this)">👁️</span>
+    <div class="footer-note">
+      it's just passion
     </div>
 
-    <button onclick="signUpUser()">Sign Up</button>
-    <button class="secondary-btn" onclick="window.location.href='login.html'">Login</button>
-
-    <div class="footer">
-      Already have an account? <a href="index.html">Login</a>
-    </div>
   </div>
 
-  <!-- Already logged in popup -->
-  <div id="alreadyPopup" class="popup" style="display: none;">
-    <div class="popup-content">
-      <span class="popup-close" onclick="document.getElementById('alreadyPopup').style.display='none'">&times;</span>
-      <h2>You're already signed in!</h2>
-      <p>Click below to go to the main page.</p>
-      <button onclick="window.location.href='main.html'">Go to Main Page</button>
-    </div>
-  </div>
-
-  <!-- Firebase SDKs -->
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyBgqgQDWEwohMJnhTcUhBx6chmXOUMSanw",
-      authDomain: "grindzone-26ee9.firebaseapp.com",
-      projectId: "grindzone-26ee9",
-      storageBucket: "grindzone-26ee9.appspot.com",
-      messagingSenderId: "457720848561",
-      appId: "1:457720848561:web:f2cde2e7e7542b2a9d8290"
-    };
-
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-
-    // Redirect if already logged in
-    auth.onAuthStateChanged(user => {
-      if (user) {
-        document.getElementById("alreadyPopup").style.display = "flex";
-      }
-    });
-
-    function togglePassword(icon) {
-      const passwordField = document.getElementById("signupPassword");
-      const isPassword = passwordField.type === "password";
-      passwordField.type = isPassword ? "text" : "password";
-    }
-
-    function signUpUser() {
-      const email = document.getElementById("signupEmail").value.trim();
-      const password = document.getElementById("signupPassword").value;
-
-      if (!email || !password) {
-        alert("Please enter both email and password.");
-        return;
-      }
-
-      if (password.length < 8) {
-        alert("Password must be at least 8 characters.");
-        return;
-      }
-
-      auth.createUserWithEmailAndPassword(email, password)
-        .then(() => {
-          alert("Signup successful!");
-          window.location.href = "info.html";
-        })
-        .catch(error => {
-          if (error.code === "auth/email-already-in-use") {
-            alert("This email is already in use.");
-          } else if (error.code === "auth/invalid-email") {
-            alert("Please enter a valid email address.");
-          } else {
-            alert("Error: " + error.message);
-          }
-        });
-    }
-  </script>
 </body>
 </html>
