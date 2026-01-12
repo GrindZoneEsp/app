@@ -5,10 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>FFM Esports Comeback | GrindZone</title>
 
-  <!-- Google Font -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
 
-  <!-- AOS Animation -->
   <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
   <style>
@@ -35,303 +33,276 @@
       line-height: 1.9;
     }
 
-    /* ADS */
-    .ad {
+    /* HEADER */
+    header {
+      position: fixed;
+      top: 0;
+      left: 0;
       width: 100%;
-      display: flex;
-      justify-content: center;
-      margin: 12px 0;
+      z-index: 50;
+      background: rgba(2, 6, 23, 0.85);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid rgba(56, 189, 248, 0.15);
     }
 
-    .ad span {
-      position: absolute;
-      top: -10px;
-      font-size: 0.7rem;
-      color: var(--muted);
-    }
-
-    .ad-box {
-      width: 100%;
-      max-width: 360px;
-      height: 100px;
-      background: #020617;
-      border: 1px dashed rgba(255,255,255,0.15);
-      border-radius: 10px;
+    .header-container {
       display: flex;
       align-items: center;
-      justify-content: center;
-      color: var(--muted);
-      font-size: 0.85rem;
-    }
-
-    .ad-mid {
-      margin: 40px auto;
-    }
-
-    .ad-footer {
-      margin: 50px auto 30px;
+      justify-content: space-between;
+      padding: 14px 8%;
     }
 
     /* HERO */
     .hero {
-      min-height: 70vh;
+      min-height: 60vh;
       display: flex;
       align-items: center;
       justify-content: center;
       text-align: center;
-      padding: 24px 16px;
+      padding: 120px 16px 60px;
     }
 
     .hero h1 {
-      font-size: clamp(1.9rem, 6vw, 3rem);
+      font-size: clamp(1.9rem, 6vw, 3.5rem);
       font-weight: 700;
       background: linear-gradient(90deg, #60a5fa, #38bdf8);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
-      margin-bottom: 16px;
+      margin-bottom: 20px;
     }
 
     .hero p {
-      max-width: 620px;
+      max-width: 700px;
       margin: auto;
       color: var(--muted);
-      font-size: 0.95rem;
+      font-size: 1.1rem;
     }
 
+    /* SECTIONS */
     section {
-      padding: 56px 5%;
+      padding: 60px 8%;
+      max-width: 1000px;
+      margin: auto;
     }
 
     .section-title {
-      font-size: 1.8rem;
-      margin-bottom: 24px;
+      font-size: 2rem;
+      margin-bottom: 40px;
       position: relative;
+      color: #fff;
     }
 
     .section-title::after {
       content: '';
-      width: 48px;
-      height: 3px;
+      width: 60px;
+      height: 4px;
       background: var(--accent);
       position: absolute;
-      bottom: -8px;
+      bottom: -10px;
       left: 0;
     }
 
+    /* CARDS & TIMELINE */
+    .timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 30px;
+    }
+
     .card {
-      background: #111827;
-      border: 1px solid rgba(255,255,255,0.05);
-      border-radius: 16px;
-      padding: 26px;
+      background: var(--card);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      padding: 32px;
+      transition: transform 0.3s ease;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+      border-color: rgba(56, 189, 248, 0.3);
+    }
+
+    .year {
+      font-size: 1.3rem;
+      color: var(--accent);
+      font-weight: 700;
+      margin-bottom: 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
 
     .card p {
       color: var(--muted);
-      font-size: 0.95rem;
+      font-size: 1rem;
+      margin-bottom: 15px;
     }
 
-    .timeline {
-      display: flex;
-      flex-direction: column;
-      gap: 22px;
+    .card p:last-child {
+      margin-bottom: 0;
     }
 
-    .year {
-      font-size: 1.15rem;
-      color: var(--accent);
+    strong {
+      color: #fff;
       font-weight: 600;
-      margin-bottom: 10px;
     }
 
-    footer {
-      padding: 30px 6%;
+    /* STATS GRID */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 20px;
+      margin-top: 20px;
+    }
+
+    .stat-box {
+      background: #1e293b;
+      padding: 30px;
+      border-radius: 16px;
       text-align: center;
-      border-top: 1px solid rgba(255,255,255,0.05);
+      border-bottom: 4px solid var(--accent);
+    }
+
+    .stat-box h2 {
+      font-size: 2.5rem;
+      color: #fff;
+      margin-bottom: 5px;
+    }
+
+    .stat-box span {
+      font-size: 0.9rem;
       color: var(--muted);
-      font-size: 0.85rem;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    /* FOOTER */
+    footer {
+      padding: 60px 8% 40px;
+      text-align: center;
+      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      color: var(--muted);
+      font-size: 0.9rem;
+    }
+
+    @media (max-width: 768px) {
+      section { padding: 40px 6%; }
+      .hero { padding-top: 100px; }
     }
   </style>
 </head>
 <body>
 
-  <!-- TOP MOBILE AD -->
-  <div class="ad ad-top" data-aos="fade-down">
-    <span>Sponsored</span>
-    <div class="ad-box">Ad Space • 320 × 100</div>
-  </div>
-
-  <!-- GRINDZONE HEADER -->
-  <header style="position:fixed;top:0;left:0;width:100%;z-index:50;background:rgba(2,6,23,0.85);backdrop-filter:blur(10px);border-bottom:1px solid rgba(56,189,248,0.15)">
-    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 8%">
-      <div style="display:flex;align-items:center;gap:10px">
-        <img src="https://i.ibb.co/ZRv738N7/grindzone-logo.png" alt="GrindZone Logo" style="height:34px;width:auto">
-        <div style="font-weight:700;font-size:1.4rem;color:#38bdf8">GrindZone</div>
+  <header>
+    <div class="header-container">
+      <div style="display:flex;align-items:center;gap:12px">
+        <img src="https://i.ibb.co/ZRv738N7/grindzone-logo.png" alt="GrindZone Logo" style="height:38px;width:auto">
+        <div style="font-weight:700;font-size:1.5rem;color:#38bdf8; letter-spacing: -0.5px">GrindZone</div>
       </div>
-      <div style="font-size:0.85rem;color:#9ca3af;letter-spacing:0.5px">NOT BUSINESS IT'S PASSION</div>
-    </div>
-  
+      <div style="font-size:0.75rem;color:#9ca3af;letter-spacing:1px; font-weight: 600">NOT BUSINESS IT'S PASSION</div>
     </div>
   </header>
 
-  <!-- HERO -->
-  <div class="hero" style="padding-top:80px">
+  <div class="hero">
     <div data-aos="fade-up">
       <h1>The Return of Free Fire MAX Esports</h1>
       <p>
-        From India’s one of the first mobile esports LAN to a nationwide shutdown and a long road back — this is how Free Fire MAX esports rebuilt itself and re-entered the Indian competitive scene.
+        From India’s first mobile esports LAN to a nationwide shutdown and a grueling recovery — this is the story of how Free Fire MAX rebuilt its competitive legacy.
       </p>
     </div>
   </div>
 
-  <!-- TIMELINE -->
   <section>
     <h2 class="section-title" data-aos="fade-right">The Journey</h2>
     <div class="timeline">
 
-      <!-- 2019 -->
-      <div class="card" data-aos="fade-up" data-aos-delay="50">
+      <div class="card" data-aos="fade-up">
         <div class="year">2019 — The Beginning 🕹️</div>
         <p>
-          Free Fire esports in India officially began with the <strong>Free Fire India Today League</strong>, a LAN event held in Delhi on <strong>12 October 2019</strong>. Sponsored by India Today, it became one of the earliest large-scale mobile esports LAN tournaments in the country.
+          Free Fire esports in India officially kicked off with the <strong>Free Fire India Today League</strong> in Delhi on <strong>12 October 2019</strong>. It was a milestone event that proved mobile battle royale could command a massive live audience.
         </p>
         <p>
-          This event proved that mobile battle royale esports could work in India — with live competition, sponsors, and a serious competitive structure.
-        </p>
-        <p>
-          The same year also marked India’s <strong>first-ever slot at an international Free Fire event</strong>, the <strong>Free Fire Asia Invitational</strong>, placing Indian teams on the global map for the first time.
+          The same year, India earned its first international slot at the <strong>Free Fire Asia Invitational</strong>, marking the start of India's presence on the global competitive stage.
         </p>
       </div>
 
-      <!-- MID ARTICLE AD -->
-      <div class="ad ad-mid" data-aos="fade-up">
-        <div class="ad-box">Ad Space • 300 × 250</div>
-      </div>
-
-      <!-- 2020 -->
-      <!-- SECTION BREAK AD -->
-      <div class="ad ad-mid" data-aos="fade-up">
-        <div class="ad-box">Ad Space • 300 × 250</div>
-      </div>
-
-      <div class="card" data-aos="fade-up" data-aos-delay="100">
+      <div class="card" data-aos="fade-up">
         <div class="year">2020 — COVID & Online Explosion 🔥</div>
         <p>
-          The COVID-19 pandemic unexpectedly became a turning point for Free Fire. With players confined indoors, online gaming surged, and Free Fire benefited massively due to its low-end device accessibility and fast-paced match format.
+          The pandemic acted as a catalyst. With everyone indoors, Free Fire's accessibility on low-end devices led to an explosion in active players. 
         </p>
         <p>
-          Garena conducted the <strong>Free Fire India Championship Fall 2020</strong> with a massive prize pool of <strong>₹5,000,000 INR (≈ $68,000 USD)</strong>. Audience support skyrocketed, and esports stars began gaining mainstream recognition.
-        </p>
-        <p>
-          Although <strong>FFIC Spring 2020</strong> was cancelled, the <strong>Free Fire Continental Series 2020</strong> saw <strong>three Indian teams</strong> represent the country internationally. Streams consistently crossed <strong>lakhs of concurrent viewers</strong>, pushing Free Fire into the top tier of Indian esports.
+          Garena launched the <strong>FF Championship Fall 2020</strong> with a <strong>₹50 Lakh</strong> prize pool. Despite the cancellation of the Spring LAN, the <strong>Free Fire Continental Series</strong> kept the momentum alive with three Indian squads competing internationally.
         </p>
       </div>
 
-      <!-- 2021 -->
-      <!-- SECTION BREAK AD -->
-      <div class="ad ad-mid" data-aos="fade-up">
-        <div class="ad-box">Ad Space • 300 × 250</div>
-      </div>
-
-      <div class="card" data-aos="fade-up" data-aos-delay="150">
+      <div class="card" data-aos="fade-up">
         <div class="year">2021 — The Golden Peak 👑</div>
         <p>
-          By 2021, Free Fire esports had reached its absolute peak in India. Nearly <strong>seven official tournaments</strong> were conducted in a single year, along with multiple third-party events and international qualification slots.
+          This was the "Golden Era." India saw nearly <strong>seven official tournaments</strong> in one year. The <strong>FFIC Spring 2021</strong> offered <strong>₹75 Lakhs</strong>, where <strong>Galaxy Racers</strong> and <strong>Team Elite</strong> emerged as icons.
         </p>
         <p>
-          <strong>FFIC Spring 2021</strong>, held in January, featured a prize pool of <strong>₹7,500,000 INR (≈ $103,000 USD)</strong>. Winners <strong>Galaxy Racers</strong> and runners-up <strong>Team Elite</strong> qualified for the <strong>Free Fire World Series Singapore 2021</strong>.
-        </p>
-        <p>
-          The <strong>Tri-Series (India, Pakistan, Bangladesh)</strong>, won by <strong>Sixth Sense</strong>, offered a <strong>$50,000 USD</strong> prize pool and further strengthened India’s regional dominance.
-        </p>
-        <p>
-          <strong>FFPL India Summer 2021</strong> and <strong>FFPL Winter 2021</strong> continued the momentum, each with prize pools exceeding <strong>₹3,500,000 INR</strong>.
-        </p>
-        <p>
-          <strong>FFIC 2021</strong> became one of the most iconic tournaments in Indian esports history. Team Elite finally broke their long-standing runner-up curse, with <strong>KILLER FF’s last kill</strong> still remembered by fans. India secured <strong>one Finals slot and three Play-ins slots</strong> for the Free Fire Asia Championship.
-        </p>
-        <p>
-          Major third-party events like <strong>Conquest Free Fire Open Seasons 1 & 2</strong> contributed a combined prize pool of <strong>₹90 lakh</strong>. By the end of 2021, Free Fire esports had crossed <strong>100M+ cumulative tournament views</strong>, challenging BGMI’s dominance in India.
+          By the end of 2021, the community witnessed the legendary <strong>KILLER FF last-second kill</strong> and the scene surpassed <strong>100 Million cumulative views</strong>, firmly establishing itself as a rival to BGMI.
         </p>
       </div>
 
-      <!-- 2022–2024 -->
-      <!-- SECTION BREAK AD -->
-      <div class="ad ad-mid" data-aos="fade-up">
-        <div class="ad-box">Ad Space • 300 × 250</div>
-      </div>
-
-      <div class="card" data-aos="fade-up" data-aos-delay="200">
-        <div class="year">2022–2024 — Ban, Silence & Survival 💔</div>
+      <div class="card" data-aos="fade-up">
+        <div class="year">2022–2024 — Ban & Survival 💔</div>
         <p>
-          In early 2022, while FFIC was still ongoing, Free Fire was suddenly banned in India. What many believed would be temporary turned into a long and painful pause.
+          On <strong>14 February 2022</strong>, the game was suddenly banned. Official tournaments halted, sponsors pulled out, and organizations dissolved their rosters.
         </p>
         <p>
-          Official tournaments stopped instantly. Brands exited. Organizations dissolved rosters. Many players quit competitive gaming altogether, while others continued grinding with no income and no certainty.
-        </p>
-        <p>
-          For nearly two years, the ecosystem survived only because of community-driven efforts. Figures like <strong>Rocky Mamu (ROCKY)</strong> and <strong>RDX</strong>, along with a handful of tournament organizers, kept the scene alive using their own resources.
-        </p>
-        <p>
-          From <strong>14 February 2022</strong> to mid-2025, Free Fire esports in India existed purely on belief, loyalty, and blind hope.
+          The scene only survived through the sheer grit of community figures like <strong>Rocky Mamu (ROCKY)</strong> and <strong>RDX</strong>, who hosted grass-roots tournaments to keep the fire burning during two years of silence.
         </p>
       </div>
 
-      <!-- 2025 -->
-      <!-- SECTION BREAK AD -->
-      <div class="ad ad-mid" data-aos="fade-up">
-        <div class="ad-box">Ad Space • 300 × 250</div>
-      </div>
-
-      <div class="card" data-aos="fade-up" data-aos-delay="250">
+      <div class="card" data-aos="fade-up">
         <div class="year">2025 — The Comeback 🚀</div>
         <p>
-          In 2025, Garena officially returned with <strong>Free Fire MAX</strong>. The revival began with the <strong>Skyesports Free Fire MAX Pro League</strong>, an invitational tournament that signaled a fresh competitive roadmap.
+          Garena returned with <strong>Free Fire MAX</strong>, launching the <strong>FFM India Championship (FFMIC)</strong> with a massive <strong>₹1 Crore prize pool</strong>. Over <strong>8 Lakh players</strong> registered for the open qualifiers.
         </p>
         <p>
-          This was followed by the <strong>Free Fire MAX India Championship (FFMIC)</strong> with a massive <strong>₹1 Crore prize pool</strong>. Over <strong>8 lakh players</strong> participated in open qualifiers, and the event became only the <strong>second Free Fire LAN in India after five years</strong>.
-        </p>
-        <p>
-          The LAN drew huge audience interest and was won by <strong>Total Gaming Esports</strong>, confirming that the ecosystem was finally stabilizing again.
-        </p>
-        <p>
-          Third-party organizers also returned, hosting national and international tournaments with significant prize pools.
-        </p>
-        <p>
-          Later in 2025, Garena announced the <strong>Free Fire Asia Invitational</strong> with a <strong>$35,000 USD prize pool</strong>. Indian teams competed against squads from Nepal, Bangladesh, Vietnam, Thailand, Indonesia, and Malaysia. <strong>GodLike Esports</strong> narrowly missed the BR title by a single fight, while <strong>NG Pro</strong> finished as runners-up in CS mode.
-        </p>
-        <p>
-          While the ecosystem is still rebuilding and hasn’t yet reached its 2021 peak, organizations are returning, brands are showing interest again, and the Free Fire community is slowly rising — stronger, wiser, and more united.
+          <strong>Total Gaming Esports</strong> claimed the title in the first major LAN in five years. Later, <strong>GodLike Esports</strong> and <strong>NG Pro</strong> represented India at the Asia Invitational, proving that while the scene is still rebuilding, the talent is sharper than ever.
         </p>
       </div>
 
     </div>
   </section>
 
-  <!-- STATS -->
   <section>
     <h2 class="section-title" data-aos="fade-right">By the Numbers</h2>
-    <div class="stats">
-      <div class="stat" data-aos="zoom-in"><h2>8L+</h2><span>Players in FFMIC Qualifiers</span></div>
-      <div class="stat" data-aos="zoom-in"><h2>₹1 Cr</h2><span>FFMIC Prize Pool</span></div>
-      <div class="stat" data-aos="zoom-in"><h2>7–8</h2><span>Official Events in Peak Year</span></div>
-      <div class="stat" data-aos="zoom-in"><h2>2025</h2><span>Official Esports Return</span></div>
+    <div class="stats-grid">
+      <div class="stat-box" data-aos="zoom-in">
+        <h2>8L+</h2>
+        <span>FFMIC Participants</span>
+      </div>
+      <div class="stat-box" data-aos="zoom-in" data-aos-delay="100">
+        <h2>₹1 Cr</h2>
+        <span>Largest Prize Pool</span>
+      </div>
+      <div class="stat-box" data-aos="zoom-in" data-aos-delay="200">
+        <h2>100M+</h2>
+        <span>Peak Views</span>
+      </div>
+      <div class="stat-box" data-aos="zoom-in" data-aos-delay="300">
+        <h2>2025</h2>
+        <span>Year of Revival</span>
+      </div>
     </div>
   </section>
 
-  <!-- FOOTER -->
-  <!-- FOOTER AD -->
-  <div class="ad ad-footer" data-aos="fade-up">
-    <div class="ad-box">Ad Space • 320 × 100</div>
-  </div>
-
   <footer>
-    © 2026 <strong>GrindZone</strong> • Built for the Indian Esports Community
+    <p>© 2026 <strong>GrindZone</strong></p>
+    <p style="margin-top: 10px; font-size: 0.8rem;">Built for the Indian Esports Community • Passion over Business</p>
   </footer>
 
-  <!-- AOS -->
   <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
   <script>
-    AOS.init({ duration: 900, once: true });
+    AOS.init({ 
+        duration: 900, 
+        once: true,
+        offset: 100 
+    });
   </script>
 
 </body>
