@@ -5,126 +5,202 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Login | GRINDZONE</title>
   <style>
+    :root {
+      --bg-dark: #0a0c10;
+      --card-bg: rgba(18, 22, 31, 0.75);
+      --accent: #6366f1;
+      --accent-glow: rgba(99, 102, 241, 0.15);
+      --text-main: #f3f4f6;
+      --text-muted: #9ca3af;
+      --input-bg: #1f2937;
+      --border-color: rgba(255, 255, 255, 0.08);
+    }
+
     body {
       margin: 0;
       padding: 0;
-      background: linear-gradient(to right, #f8f9fa, #e9ecef);
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: var(--bg-dark);
+      /* Subtle gaming grid graphic background */
+      background-image: 
+        radial-gradient(circle at 50% 50%, var(--accent-glow) 0%, transparent 60%),
+        linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+      background-size: 100% 100%, 30px 30px, 30px 30px;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
       height: 100vh;
+      overflow: hidden;
+    }
+
+    /* Ambient glow graphic behind the card */
+    .glow-sphere {
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, transparent 70%);
+      z-index: 1;
+      pointer-events: none;
     }
 
     .container {
+      position: relative;
+      z-index: 2;
       width: 100%;
-      max-width: 360px;
-      padding: 30px;
-      background: #ffffff;
-      border-radius: 12px;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      max-width: 380px;
+      padding: 40px;
+      background: var(--card-bg);
+      /* Frosted glass graphic effect */
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid var(--border-color);
+      border-radius: 20px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255,255,255,0.1);
       text-align: center;
+      box-sizing: border-box;
     }
 
     .logo {
-      margin-bottom: 20px;
+      margin-bottom: 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
     }
 
     .logo img {
-      width: 50px;
-      height: 50px;
+      width: 65px;
+      height: 65px;
+      filter: drop-shadow(0 0 12px rgba(99, 102, 241, 0.4));
     }
 
     .logo span {
       font-size: 1.8rem;
-      font-weight: bold;
-      color: #5c7cfa;
+      font-weight: 800;
+      letter-spacing: 2px;
+      color: var(--text-main);
+      background: linear-gradient(135deg, #ffffff 30%, #a5b4fc 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .input-group {
+      position: relative;
+      margin-bottom: 18px;
     }
 
     input {
       width: 100%;
-      padding: 12px;
-      margin: 10px 0;
-      border: 1px solid #dee2e6;
-      border-radius: 6px;
-      font-size: 14px;
-      background: #f1f3f5;
-      color: #212529;
+      padding: 14px 16px;
+      border: 1px solid var(--border-color);
+      border-radius: 10px;
+      font-size: 15px;
+      background: var(--input-bg);
+      color: var(--text-main);
       outline: none;
-      transition: border-color 0.2s;
+      box-sizing: border-box;
+      transition: all 0.25s ease;
     }
 
     input:focus {
-      border-color: #5c7cfa;
+      border-color: var(--accent);
+      background: #263143;
+      box-shadow: 0 0 15px rgba(99, 102, 241, 0.2);
+    }
+
+    input::placeholder {
+      color: var(--text-muted);
+    }
+
+    .utilities {
+      display: flex;
+      justify-content: flex-end;
+      margin-top: -8px;
+      margin-bottom: 24px;
+    }
+
+    .forgot-password-link {
+      font-size: 13px;
+      color: var(--text-muted);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+
+    .forgot-password-link:hover {
+      color: var(--accent);
     }
 
     button {
       width: 100%;
-      padding: 12px;
-      background-color: #5c7cfa;
+      padding: 14px;
+      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
       color: white;
       border: none;
-      border-radius: 6px;
+      border-radius: 10px;
       font-size: 16px;
+      font-weight: 600;
+      letter-spacing: 0.5px;
       cursor: pointer;
-      margin-top: 15px;
-      transition: background-color 0.3s;
+      box-shadow: 0 4px 15px rgba(79, 70, 229, 0.4);
+      transition: all 0.25s ease;
     }
 
     button:hover {
-      background-color: #4c6ef5;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px rgba(79, 70, 229, 0.6);
+      background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
     }
 
-    .forgot-password {
-      margin-top: 10px;
-      text-align: right;
-      font-size: 13px;
-    }
-
-    .forgot-password a {
-      color: #5c7cfa;
-      text-decoration: none;
-    }
-
-    .forgot-password a:hover {
-      text-decoration: underline;
+    button:active {
+      transform: translateY(0);
     }
 
     .footer {
-      margin-top: 20px;
-      font-size: 13px;
-      color: #868e96;
+      margin-top: 30px;
+      font-size: 14px;
+      color: var(--text-muted);
     }
 
     .footer a {
-      color: #5c7cfa;
+      color: var(--accent);
       text-decoration: none;
+      font-weight: 500;
+      transition: color 0.2s;
     }
 
     .footer a:hover {
+      color: #818cf8;
       text-decoration: underline;
     }
   </style>
 </head>
 <body>
 
+  <div class="glow-sphere"></div>
+
   <div class="container">
     <div class="logo">
       <img src="https://i.ibb.co/LhxDvVJk/grindzone.png" alt="GRINDZONE Logo" />
-      <div><span>GRINDZONE</span></div>
+      <span>GRINDZONE</span>
     </div>
 
-    <input type="email" id="loginEmail" placeholder="Email" />
-    <input type="password" id="loginPassword" placeholder="Password" />
-
-    <div class="forgot-password">
-      <a href="forgot.html">Forgot Password?</a>
+    <div class="input-group">
+      <input type="email" id="loginEmail" placeholder="Email Address" required />
+    </div>
+    
+    <div class="input-group">
+      <input type="password" id="loginPassword" placeholder="Password" required />
     </div>
 
-    <button onclick="loginUser()">Login</button>
+    <div class="utilities">
+      <a href="forgot.html" class="forgot-password-link">Forgot Password?</a>
+    </div>
+
+    <button onclick="loginUser()">Launch Platform</button>
 
     <div class="footer">
-      Don’t have an account? <a href="signup.html">Sign up</a>
+      New to the Zone? <a href="signup.html">Create Account</a>
     </div>
   </div>
 
@@ -148,9 +224,10 @@
       const email = document.getElementById("loginEmail").value;
       const password = document.getElementById("loginPassword").value;
 
+      if (!email || !password) return;
+
       auth.signInWithEmailAndPassword(email, password)
         .then(userCredential => {
-          alert("Login successful!");
           window.location.href = "main.html";
         })
         .catch(error => {
@@ -159,7 +236,7 @@
             error.code === "auth/user-not-found" ||
             error.code === "auth/invalid-email"
           ) {
-            alert("Email or password is incorrect.");
+            alert("Incorrect credentials. Please try again.");
           } else {
             alert("Error: " + error.message);
           }
@@ -168,4 +245,3 @@
   </script>
 </body>
 </html>
-
